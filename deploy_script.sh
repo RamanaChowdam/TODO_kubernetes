@@ -59,17 +59,17 @@ env_variables() {
 }
 
 exporting() {
-        export root_password=$mysql_root_password 
-        export mysql_user_name=$mysql_user  
-        export user_password=$mysql_password 
-        export mysql_database_name=$database_name 
-        export wm_root_password=$mysql_root_password 
-        export mysql_container_name=$db_service_container_name 
-        export webapp_container_name=$webapp_service_container_name 
-        export nginx_container_name=$nginx_service_container_name 
-        export mysql_persistant_volume=$mysql_volume_directory 
-        export webapp_persistant_volume=$webapp_volume_directory 
-        export nginx_persistant_volume=$nginx_volume_directory 
+    export root_password=$mysql_root_password 
+    export mysql_user_name=$mysql_user  
+    export user_password=$mysql_password 
+    export mysql_database_name=$database_name 
+    export wm_root_password=$mysql_root_password 
+    export mysql_container_name=$db_service_container_name 
+    export webapp_container_name=$webapp_service_container_name 
+    export nginx_container_name=$nginx_service_container_name 
+    export mysql_persistant_volume=$mysql_volume_directory 
+    export webapp_persistant_volume=$webapp_volume_directory 
+    export nginx_persistant_volume=$nginx_volume_directory 
 }
 
 # help section
@@ -78,19 +78,19 @@ display_help() {
     echo "Usage: sudo $0 [Option...]   [Command]
         sudo $0 -h|--help"
     echo "Commands:"
-    echo "   deploy                Create and start containers"
+    echo "   deploy                Create, start containers and copy the dump.sql to db container"
     echo "   help                  Get help on a command"
     echo "   restart               Restart containers"
     echo "   start                 Start services"
     echo "   stop                  Stop services"
     echo "   down                  Stop and remove containers, networks, images, and volumes"
-    echo "   import                import .sql file to container"
 
 }
 deploy_containers() {
     env_variables
     exporting
     docker-compose up -d
+    import_db
 }
 restart_containers() {
     exporting
@@ -109,25 +109,22 @@ down_containers() {
     docker-compose down
 }
 import_db() {
-    exporting
+    sleep 30
     echo "you can import dumpfile only if your containers are up"
     echo
-    read -p "if your containers up enter (y) , or enter (n) :" import_decision
-    if [ "$import_decision" == [Y|y] ]
-    then
-        echo "list of sql files in current directory"
-        ls *.sql
-        read -p "enter your dump.sql file name :" dumpfile
-        if [ "$dumpfile" == "*.sql" ]
-        then 
-            docker cp $dumpfile $db_service_container_name:$dumpfile
-        else
-            echo "please select right file to import"
-        fi
-    elif [ "$import_decision" == [N|n] ]
-    then
-    echo "your containers are not up so you cant perform operation"
-    fi
+    echo "list of sql files in current directory"
+    ls *.sql
+    read -p "enter your dump.sql file name :" dumpfile
+    docker cp $dumpfile $db_service_container_name:$dumpfile
+    docker exec -it $db_service_container_name /bin/bash
+    mysql -uroot -p$mysql_root_password
+    show databases;
+    read -p "enter database name to import $dumpfile fle :" selected_database_for_import
+    use $selected_database_for_import;
+    source $dumpfile
+    exit
+    exit
+       
 }
 
 case "$1" in  
@@ -148,9 +145,6 @@ case "$1" in
                 ;;
         down)
                 down_containers 
-                ;;
-        import)
-                import_db 
                 ;;
         *)
                 echo "This shell script is to perform given operations only"
