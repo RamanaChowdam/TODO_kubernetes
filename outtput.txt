@@ -1,0 +1,15 @@
+The mysql_container_name variable is not set. Defaulting to a blank string.
+The root_password variable is not set. Defaulting to a blank string.
+The mysql_user_name variable is not set. Defaulting to a blank string.
+The user_password variable is not set. Defaulting to a blank string.
+The mysql_database_name variable is not set. Defaulting to a blank string.
+The mysql_persistant_volume variable is not set. Defaulting to a blank string.
+The webapp_container_name variable is not set. Defaulting to a blank string.
+The wm_root_password variable is not set. Defaulting to a blank string.
+The webapp_persistant_volume variable is not set. Defaulting to a blank string.
+The nginx_container_name variable is not set. Defaulting to a blank string.
+The nginx_persistant_volume variable is not set. Defaulting to a blank string.
+Restarting nginx  ... 
+Restarting webapp ... 
+Restarting mysql  ... 
+[2A[2KRestarting webapp ... [32mdone[0m[2B[3A[2KRestarting nginx  ... [32mdone[0m[3B[1A[2KRestarting mysql  ... [32mdone[0m[1B

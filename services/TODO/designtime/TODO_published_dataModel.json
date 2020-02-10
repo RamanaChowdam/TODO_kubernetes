@@ -1,0 +1,129 @@
+{
+  "cascadeEnabled" : false,
+  "dataLockingOptions" : {
+    "versionColumnName" : "VERSION",
+    "lockingStrategy" : "NONE"
+  },
+  "description" : "TODO",
+  "draft" : false,
+  "name" : "TODO",
+  "packageName" : "com.todo.todo",
+  "tables" : [ {
+    "catalog" : "TODO",
+    "columns" : [ {
+      "columnValue" : {
+        "insertable" : true,
+        "updatable" : true,
+        "defaultValue" : "",
+        "type" : "user-defined"
+      },
+      "constraintList" : [ ],
+      "fieldName" : "id",
+      "foreignKey" : false,
+      "generatorType" : "identity",
+      "generatorValue" : null,
+      "hidden" : false,
+      "javaType" : "integer",
+      "length" : 0,
+      "name" : "ID",
+      "nullable" : false,
+      "oldName" : "ID",
+      "partOfAnyRelation" : false,
+      "partOfForeignKey" : false,
+      "partOfPrimaryKey" : true,
+      "partOfUniqueKey" : true,
+      "period" : false,
+      "precision" : 10,
+      "primaryKey" : true,
+      "scale" : 0,
+      "sequenceSchema" : null,
+      "sqlType" : "number",
+      "unique" : true
+    }, {
+      "columnValue" : {
+        "insertable" : true,
+        "updatable" : true,
+        "defaultValue" : "",
+        "type" : "user-defined"
+      },
+      "constraintList" : [ ],
+      "fieldName" : "name",
+      "foreignKey" : false,
+      "generatorType" : "assigned",
+      "generatorValue" : null,
+      "hidden" : false,
+      "javaType" : "string",
+      "length" : 255,
+      "name" : "NAME",
+      "nullable" : true,
+      "oldName" : "NAME",
+      "partOfAnyRelation" : false,
+      "partOfForeignKey" : false,
+      "partOfPrimaryKey" : false,
+      "partOfUniqueKey" : false,
+      "period" : false,
+      "precision" : 0,
+      "primaryKey" : false,
+      "scale" : 0,
+      "sequenceSchema" : null,
+      "sqlType" : "string",
+      "unique" : false
+    }, {
+      "columnValue" : {
+        "insertable" : true,
+        "updatable" : true,
+        "defaultValue" : "",
+        "type" : "user-defined"
+      },
+      "constraintList" : [ ],
+      "fieldName" : "person",
+      "foreignKey" : false,
+      "generatorType" : "assigned",
+      "generatorValue" : null,
+      "hidden" : false,
+      "javaType" : "string",
+      "length" : 255,
+      "name" : "PERSON",
+      "nullable" : true,
+      "oldName" : "PERSON",
+      "partOfAnyRelation" : false,
+      "partOfForeignKey" : false,
+      "partOfPrimaryKey" : false,
+      "partOfUniqueKey" : false,
+      "period" : false,
+      "precision" : 0,
+      "primaryKey" : false,
+      "scale" : 0,
+      "sequenceSchema" : null,
+      "sqlType" : "string",
+      "unique" : false
+    } ],
+    "constraints" : [ ],
+    "entityName" : "UserTodo",
+    "filter" : null,
+    "fullyQualifiedName" : "com.todo.todo.UserTodo",
+    "ignoreRefreshAfterInsert" : false,
+    "name" : "USER_TODO",
+    "oldName" : "USER_TODO",
+    "primaryKey" : {
+      "columns" : [ "ID" ],
+      "composite" : false,
+      "generator" : {
+        "generatorType" : "identity",
+        "generatorValue" : null,
+        "schemaName" : null
+      },
+      "name" : "PRIMARY",
+      "virtual" : false
+    },
+    "relations" : [ ],
+    "schema" : null,
+    "tableDataLockingOptions" : {
+      "versionColumnName" : "VERSION",
+      "lockingStrategy" : "NONE",
+      "overrideStrategy" : "INHERIT"
+    },
+    "temporals" : [ ],
+    "type" : "TABLE"
+  } ]
+}

@@ -1,0 +1,42 @@
+version: '3.3'
+services: 
+  db:
+    image: mysql:5.6
+    container_name: ${mysql_container_name} 
+    environment:
+     MYSQL_ROOT_PASSWORD: ${root_password} 
+     MYSQL_USER: ${mysql_user_name} 
+     MYSQL_PASSWORD: ${user_password} 
+     MYSQL_DATABASE: ${mysql_database_name} 
+    volumes:
+     - ${mysql_persistant_volume}:/var/lib/mysql 
+    
+  webapp:
+    build:
+        context: ./
+    container_name: ${webapp_container_name} 
+    environment: 
+      wm.mysqlCloudHost: db:3306
+      wm.mysqlCloudUsername: root
+      wm.mysqlCloudPassword: ${wm_root_password}
+    ports:
+       - "8080:8080"
+    volumes:
+        - ${webapp_persistant_volume}:/usr/local/tomcat/logs
+    links:
+     - db
+
+  nginx:
+    build: 
+        context: ./nginx/
+    container_name: ${nginx_container_name}
+    ports:
+       - "80:80"
+    volumes:
+       - ${nginx_persistant_volume}:/var/logs/nginx
+    links:
+        - webapp
+
+
+
+
