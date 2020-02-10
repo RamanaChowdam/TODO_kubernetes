@@ -113,7 +113,7 @@ import_db() {
     echo "you can import dumpfile only if your containers are up"
     echo
     read -p "if your containers up enter (y) , or enter (n) :" import_decision
-    if [ "$import_decision" == {Y|y} ]
+    if [ "$import_decision" == [Y|y] ]
     then
         echo "list of sql files in current directory"
         ls *.sql
@@ -124,7 +124,7 @@ import_db() {
         else
             echo "please select right file to import"
         fi
-    elif [ "$import_decision" == {N|n} ]
+    elif [ "$import_decision" == [N|n] ]
     then
     echo "your containers are not up so you cant perform operation"
     fi

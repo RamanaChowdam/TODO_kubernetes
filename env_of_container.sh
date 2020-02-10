@@ -113,7 +113,7 @@ import_db() {
     echo "you can import dumpfile only if your containers are up"
     echo
     read -p "if your containers up enter (y) , or enter (n) :" import_decision
-    if [ "$import_decision" == {Y|y} ]
+    if [ "$import_decision" == [Yy] ]
     then
         echo "list of sql files in current directory"
         ls *.sql
@@ -121,10 +121,18 @@ import_db() {
         if [ "$dumpfile" == "*.sql" ]
         then 
             docker cp $dumpfile $db_service_container_name:$dumpfile
+            docker exec -it $db_service_container_name /bin/bash
+            mysql -uroot -p$mysql_root_password
+            show databases;
+            read -p "enter database name to import $dumpfile fle :" selected_database_for_import
+            use $selected_database_for_import;
+            source $dumpfile
+            exit
+            exit
         else
             echo "please select right file to import"
         fi
-    elif [ "$import_decision" == {N|n} ]
+    elif [ "$import_decision" == [Nn] ]
     then
     echo "your containers are not up so you cant perform operation"
     fi
