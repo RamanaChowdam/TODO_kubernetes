@@ -2,40 +2,40 @@ version: '3.3'
 services: 
   db:
     image: mysql:5.6
-    container_name: ${mysql_container_name} 
     environment:
-     MYSQL_ROOT_PASSWORD: ${root_password} 
-     MYSQL_USER: ${mysql_user_name} 
-     MYSQL_PASSWORD: ${user_password} 
-     MYSQL_DATABASE: ${mysql_database_name} 
+     MYSQL_ROOT_PASSWORD: ${root_password:-Wave123}  
     volumes:
-     - ${mysql_persistant_volume}:/var/lib/mysql 
+            - ${mysql_persistant_volume:-/tmp/mysql/}:/var/lib/mysql
+    networks: 
+     - app_network                 
     
   webapp:
     build:
         context: ./
-    container_name: ${webapp_container_name} 
-    environment: 
+        args: 
+         profile: ${maven_build:-deployment}
+    environment:
       wm.mysqlCloudHost: db:3306
       wm.mysqlCloudUsername: root
-      wm.mysqlCloudPassword: ${wm_root_password}
-    ports:
-       - "8080:8080"
+      wm.mysqlCloudPassword: ${root_password:-Wave123}
     volumes:
-        - ${webapp_persistant_volume}:/usr/local/tomcat/logs
-    links:
-     - db
-
+            - ${webapp_persistant_volume:-/tmp/tomcat-logs}:/usr/local/tomcat/logs
+    networks: 
+     - app_network
+   
   nginx:
     build: 
         context: ./nginx/
-    container_name: ${nginx_container_name}
     ports:
        - "80:80"
     volumes:
-       - ${nginx_persistant_volume}:/var/logs/nginx
-    links:
-        - webapp
+            - ${nginx_persistant_volume:-/tmp/nginx-logs}:/var/log/nginx
+    networks: 
+        - app_network
+networks:
+   app_network:
+      driver: bridge
+      
 
 
 
