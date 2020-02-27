@@ -9,10 +9,11 @@ display_help() {
     echo "usage:  $0 -o [command] [option argument]"
     echo "usage:  $0 -h|--help "
     echo "example usage for deploy: "
-    echo "         $0 -o mvnbuild "
+    echo "         $0 -o build "
     echo "         $0 -o deploy -P {deploymentProfile} -p {mysql-password} -v {direcotry}"
     echo "         $0 -o deploy -P deployment -p Wave1234 -v /usr/local/content/myapp"
-    echo "         $0 -o import-db -p {mysql-password} -d {databasename} -f {db_dump_file_name.sql} "
+    echo "         $0 -o build-deploy -P {deploymentProfile} -p {mysql-password} -v {direcotry}"
+    echo "         $0 -o importdb -p {mysql-password} -d {databasename} -f {db_dump_file_name.sql} "
     echo
     echo "Options :"
     echo "   -o                    specify the type of operation"
@@ -21,16 +22,17 @@ display_help() {
     echo "   -v                    specify the voume directory for mysql data, tomcat logs, nginx logs"
     echo "   -d                    database name of mysql"
     echo "   -f                    dump sql file name for import"
-    echo "   -s                    service name(webapp/nginx/all) to build"
+
     echo "Commands:"
-    echo "   mvnbuild              build the docker-image and build the code using maven"
-    echo "   deploy                Create, start containers "
+    echo "   build                 To build code and create war file"
+    echo "   deploy                To Create, start containers "
+    echo "   build-deploy          To build code, create war file, Create, start containers"
     echo "   start                 Start services"
-    echo "   stop                  Stop services"
-    echo "   restart               Restart containers"
-    echo "   remove                Stop and remove containers, networks, images"
-    echo "   importdb              Import dumpfile to containers"
-    echo "   build                 To build and rebuild the service"
+    echo "   stop                  To Stop services"
+    echo "   restart               To Restart containers"
+    echo "   remove                To Stop and remove containers, networks, images"
+    echo "   importdb              To Import dumpfile to containers"
+    
 
 }
 
@@ -56,63 +58,13 @@ down_containers() {
     docker-compose down --rmi=all 
 }
 
-build_service() { 
-    # function for build the image of the service
-    if [ $service_name == "all" ]; then
-            docker-compose build nginx
-    else    
-            docker-compose build $service_name 
-    fi  
-}
-
-imagebuild_and_mavenbuild() {
+build_app() {
     #function for build the code using maven
-    docker image build -t wavemaker/wm-maven-builder:1.0 wm-maven-build/
-    docker-compose -f maven_build.yml up
+    docker-compose -f app-build-compose.yml up
 
 }
-
-
-# condition for display the help
-if [ "$#" == 0 -o "$1" == '--help' -o "$1" == '-help' -o "$1" == 'help' -o "$1" == 'h' -o "$1" == '--h' ]
-then
-    display_help
-    exit
-fi
-# .env read
-source .env
-echo "$mysql_root_password"
-echo "$data_directory"
-echo "$build_profile"
-
-#TODO: docker and docker-compose needs to be installed. 
-# getops statement for optional arguments
-while getopts o:P:p:d:f:v:h:s: options
-do
-    case "${options}" in
-            o) command_arg=${OPTARG};;
-            P) build_profile=${OPTARG};;
-            s) service_name=${OPTARG};;
-            p) mysql_root_password=${OPTARG};;
-            d) database_name=${OPTARG};;
-            f) dumpfile=${OPTARG};;
-            v) data_directory=${OPTARG};;
-            h) display_help
-    esac
-done
-
-user_dir=$(eval echo "~$USER")
-app_name=${PWD##*/} 
-# if no of positional arguments is greater than zero performs the provided operations
-if [ "$#" -gt 1 ]
-then
-    case "$command_arg" in
-        deploy)    # it creates the container and start the conatainer
-            echo "$mysql_root_password"
-            echo "$data_directory"
-            echo "$build_profile"
-            
-            if [ -z "$build_profile" ]
+deploy_app() {
+             if [ -z "$build_profile" ]
             then
                 read -p "Enter type of maven build(deployment) :" build_profile_typed
                 export maven_build=${build_profile_typed:-deployment}
@@ -148,6 +100,40 @@ then
             mkdir -p $webapp_persistant_volume
             mkdir -p $mysql_persistant_volume
             mkdir -p $nginx_persistant_volume
+}
+
+# condition for display the help
+if [ "$#" == 0 -o "$1" == '--help' -o "$1" == '-help' -o "$1" == 'help' -o "$1" == 'h' -o "$1" == '--h' ]
+then
+    display_help
+    exit
+fi
+# .env read
+source .env
+
+#TODO: docker and docker-compose needs to be installed. 
+# getops statement for optional arguments
+while getopts o:P:p:d:f:v:h: options
+do
+    case "${options}" in
+            o) command_arg=${OPTARG};;
+            P) build_profile=${OPTARG};;
+            p) mysql_root_password=${OPTARG};;
+            d) database_name=${OPTARG};;
+            f) dumpfile=${OPTARG};;
+            v) data_directory=${OPTARG};;
+            h) display_help
+    esac
+done
+
+user_dir=$(eval echo "~$USER")
+app_name=${PWD##*/} 
+# if no of positional arguments is greater than zero performs the provided operations
+if [ "$#" -gt 1 ]
+then
+    case "$command_arg" in
+        deploy)    # it creates the container and start the conatainer
+            deploy_app
             deploy_containers
             docker-compose ps
             ;;
@@ -190,31 +176,14 @@ then
             down_containers
             ;;
         build)
-             if [ -z "$service_name" ]
-                then
-                    echo "List of services can be re-build  "
-                    echo " 1. webapp"
-                    echo " 2. nginx" 
-                    echo " 3. all"
-                    read -p "Select service to build a image of service(webapp) :" service_name_typed
-                    service_name=${service_name:-"webapp"}
-            fi
-            if [ "$service_name" == "webapp" -o "$service_name" == "all" ];
-                then
-                    if [ -z "$build_profile" ]
-                    then
-                        read -p "Enter type of maven build(deployment) :" build_profile_typed
-                        export maven_build=${build_profile_typed:-deployment}
-                    else
-                        export maven_build=${build_profile}
-                    fi
-            fi
-            build_service
+            build_app
             ;;
-        mvnbuild)
-            imagebuild_and_mavenbuild
+        build-deploy)
+            build_app
+            deploy_app
+            deploy_containers
+            docker-compose ps
             ;;
-
         *) display_help;;
     esac
     
@@ -224,4 +193,3 @@ fi
 #TODO: enable export option. 
 #TODO: doc to configure multiple webapps. 
 #TODO: scale webapp
-#TODO: multi stage docker file volumes. 

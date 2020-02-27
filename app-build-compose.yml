@@ -1,0 +1,14 @@
+version: '3.3'
+services: 
+   app-builder:
+      user: ${wm_user} 
+      image: wavemaker/wm-app-builder:1.0
+      volumes: 
+         - ./:/usr/local/content/app
+         - /etc/group:/etc/group:ro
+         - /etc/passwd:/etc/passwd:ro
+         - $HOME/.m2:$HOME/.m2
+      environment:
+         - MAVEN_CONFIG=$HOME/.m2
+         - profile=deployment
+

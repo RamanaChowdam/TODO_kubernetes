@@ -1,0 +1,24 @@
+---
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  labels:
+    hyscale.io/service-name: "webapp"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  name: "webapp"
+spec:
+  selector:
+    hyscale.io/service-name: "webapp"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  ports:
+  - name: "8080-tcp"
+    port: 8080
+    protocol: "TCP"
+    targetPort: 8080
+  - name: "22-tcp"
+    port: 22
+    protocol: "TCP"
+    targetPort: 22
+  type: "LoadBalancer"

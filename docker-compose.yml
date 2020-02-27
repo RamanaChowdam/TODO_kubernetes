@@ -1,17 +1,5 @@
-version: '3.3'
+version: "3.3"
 services: 
-   app-builder:
-      #user: ${wm_user}
-      #build/run when flag enabled. 
-      image: wavemaker/wm-app-builder:1.0
-      volumes: 
-         - ./:/usr/local/content/app
-         - /etc/group:/etc/group:ro
-         - /etc/passwd:/etc/passwd:ro
-         - /etc/shadow:/etc/shadow:ro
-         - $HOME/.m2:/root/.m2
-      networks: 
-         - app_network
    db:
       image: mysql:5.6
       environment:
@@ -19,12 +7,10 @@ services:
       volumes:
                - ${mysql_persistant_volume:-/tmp/mysql/}:/var/lib/mysql
       networks: 
-         - app_network                 
+         - wm_app             
       
    webapp:
       image: tomcat:8.5
-      depends_on: 
-          - app-builder
       environment:
          wm.mysqlCloudHost: db:3306
          wm.mysqlCloudUsername: root
@@ -33,7 +19,7 @@ services:
             - ${webapp_persistant_volume:-/tmp/tomcat-logs}:/usr/local/tomcat/logs
             - ./dist:/usr/local/tomcat/webapps
       networks: 
-          - app_network
+          - wm_app
       
    nginx:
       build: 
@@ -43,9 +29,9 @@ services:
       volumes:
             - ${nginx_persistant_volume:-/tmp/nginx-logs}:/var/log/nginx
       networks: 
-         - app_network
+         - wm_app
 networks:
-   app_network:
+   wm_app:
       driver: bridge
    
 

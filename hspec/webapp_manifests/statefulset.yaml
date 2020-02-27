@@ -1,0 +1,99 @@
+---
+kind: "StatefulSet"
+apiVersion: "apps/v1"
+metadata:
+  labels:
+    hyscale.io/service-name: "webapp"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  name: "testabc-webapp"
+  annotations:
+    hyscale.io/service-spec: "{\"name\":\"webapp\",\"image\":{\"registry\":\"registry.hub.docker.com\"\
+      ,\"name\":\"wmdevops/wmdevops-private\",\"tag\":1582647661838,\"buildSpec\"\
+      :{\"stackImage\":\"tomcat:8.5.0-jre8\",\"artifacts\":[{\"name\":\"testabc\"\
+      ,\"source\":\"testabc.war\",\"destination\":\"/usr/local/tomcat/webapps\"}]}},\"\
+      memory\":\"2Gi\",\"replicas\":2,\"props\":{\"wm.mysqlCloudHost\":\"mysql:3306\"\
+      ,\"wm.mysqlCloudUsername\":\"root\"},\"volumes\":[{\"name\":\"tomcat-logs\"\
+      ,\"path\":\"/usr/local/tomcat/logs/\",\"size\":\"1Gi\"}],\"external\":true,\"\
+      ports\":[{\"port\":\"8080/tcp\",\"healthCheck\":{\"httpPath\":\"/testabc\"}},{\"\
+      port\":22}]}"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      hyscale.io/service-name: "webapp"
+      hyscale.io/environment-name: "dev"
+      hyscale.io/app-name: "testabc"
+  template:
+    metadata:
+      labels:
+        hyscale.io/service-name: "webapp"
+        hyscale.io/environment-name: "dev"
+        hyscale.io/app-name: "testabc"
+    spec:
+      imagePullSecrets:
+      - name: "registry-hub-docker-com"
+      containers:
+      - name: "webapp"
+        image: "registry.hub.docker.com/wmdevops/wmdevops-private@sha256:976cca5aac0602cf306e41b54ec8a5130bfa1b0d0d1528827bf5fc32bca34bc9"
+        imagePullPolicy: "Always"
+        env:
+        - name: "wm.mysqlCloudHost"
+          valueFrom:
+            configMapKeyRef:
+              key: "wm.mysqlCloudHost"
+              name: "testabc-webapp"
+        - name: "wm.mysqlCloudUsername"
+          valueFrom:
+            configMapKeyRef:
+              key: "wm.mysqlCloudUsername"
+              name: "testabc-webapp"
+        - name: "wm.mysqlCloudPassword"
+          valueFrom:
+            secretKeyRef:
+              key: "wm.mysqlCloudPassword"
+              name: "testabc-webapp"
+        volumeMounts:
+        - mountPath: "/usr/local/tomcat/logs/"
+          name: "tomcat-logs"
+          readOnly: false
+        ports:
+        - containerPort: 22
+          name: "22-tcp"
+          protocol: "TCP"
+        - containerPort: 8080
+          name: "8080-tcp"
+          protocol: "TCP"
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: "/testabc"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 30
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: "/testabc"
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 30
+        resources:
+          limits:
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        hyscale.io/service-name: "webapp"
+        hyscale.io/environment-name: "dev"
+        hyscale.io/app-name: "testabc"
+      name: "tomcat-logs"
+    spec:
+      accessModes:
+      - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: "1Gi"
+  serviceName: "webapp"

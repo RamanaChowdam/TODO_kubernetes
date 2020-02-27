@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice
+  namespace: webapp
+  labels:
+    svc: nodeportsvc
+spec:
+  type: NodePort
+  selector:
+    app: webapp
+  ports:
+  - port: 8080
+    targetPort: 8080
+    

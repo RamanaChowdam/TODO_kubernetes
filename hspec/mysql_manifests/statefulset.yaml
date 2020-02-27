@@ -1,0 +1,78 @@
+---
+kind: "StatefulSet"
+apiVersion: "apps/v1"
+metadata:
+  labels:
+    hyscale.io/service-name: "mysql"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  name: "testabc-mysql"
+  annotations:
+    hyscale.io/service-spec: "{\"name\":\"mysql\",\"image\":{\"registry\":\"registry.hub.docker.com\"\
+      ,\"name\":\"library/mysql\",\"tag\":5.6},\"volumes\":[{\"name\":\"mysql-data-dir\"\
+      ,\"path\":\"/var/lib/mysql\",\"size\":\"1Gi\"}],\"ports\":[{\"port\":\"3306/tcp\"\
+      ,\"healthCheck\":{}}],\"memory\":\"1Gi\"}"
+spec:
+  selector:
+    matchLabels:
+      hyscale.io/service-name: "mysql"
+      hyscale.io/environment-name: "dev"
+      hyscale.io/app-name: "testabc"
+  template:
+    metadata:
+      labels:
+        hyscale.io/service-name: "mysql"
+        hyscale.io/environment-name: "dev"
+        hyscale.io/app-name: "testabc"
+    spec:
+      imagePullSecrets:
+      - name: "registry-hub-docker-com"
+      containers:
+      - name: "mysql"
+        image: "registry.hub.docker.com/library/mysql:5.6"
+        imagePullPolicy: "Always"
+        env:
+        - name: "MYSQL_ROOT_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              key: "MYSQL_ROOT_PASSWORD"
+              name: "testabc-mysql"
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: "mysql-data-dir"
+          readOnly: false
+        ports:
+        - containerPort: 3306
+          name: "3306-tcp"
+          protocol: "TCP"
+        readinessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 30
+        livenessProbe:
+          failureThreshold: 10
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          tcpSocket:
+            port: 3306
+          timeoutSeconds: 30
+        resources:
+          limits:
+            memory: "1Gi"
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        hyscale.io/service-name: "mysql"
+        hyscale.io/environment-name: "dev"
+        hyscale.io/app-name: "testabc"
+      name: "mysql-data-dir"
+    spec:
+      accessModes:
+      - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: "1Gi"
+  serviceName: "mysql"

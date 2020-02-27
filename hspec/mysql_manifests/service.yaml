@@ -1,0 +1,20 @@
+---
+kind: "Service"
+apiVersion: "v1"
+metadata:
+  labels:
+    hyscale.io/service-name: "mysql"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  name: "mysql"
+spec:
+  selector:
+    hyscale.io/service-name: "mysql"
+    hyscale.io/environment-name: "dev"
+    hyscale.io/app-name: "testabc"
+  ports:
+  - name: "3306-tcp"
+    port: 3306
+    protocol: "TCP"
+    targetPort: 3306
+  type: "ClusterIP"
