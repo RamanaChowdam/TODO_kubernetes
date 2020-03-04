@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: clusteripsvc
-  namespace: webapp
+  namespace: wmweb
 spec:
   type: ClusterIP
   selector:

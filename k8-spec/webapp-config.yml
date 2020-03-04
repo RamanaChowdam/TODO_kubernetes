@@ -2,8 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: webapp-config
-  namespace: webapp
+  namespace: wmweb
 data:
   wm.mysqlCloudHost: "clusteripsvc:3306"
-  wm.mysqlCloudUsername: "root"
-  wm.mysqlCloudPassword: "cloudjee123" 
+  wm.mysqlCloudUsername: "root" 

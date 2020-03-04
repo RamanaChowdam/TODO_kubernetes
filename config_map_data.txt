@@ -1,0 +1,4 @@
+namespace=webapp
+replicas=2
+volumedirectory_mysql=/mysql/data
+volumedirectory_webapp=/webapp/logs

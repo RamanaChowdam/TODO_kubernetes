@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webappdeploy
-  namespace: webapp
+  namespace: wmweb
   labels:
     app: webapp
 spec:
@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-      - name: wmwebapp
+      - name: webapp
         image: chowdamramana/chowdamramana:tomcatkube
         env:
           - name: wm.mysqlCloudHost
@@ -44,8 +44,7 @@ spec:
             name: logsvolume
       volumes: 
       - name: logsvolume
-        hostPath:
-            path: /lakshmip/webapp-logs
-            type: DirectoryOrCreate
+        persistentVolumeClaim:
+            claimName: wmapp-claim
             
 

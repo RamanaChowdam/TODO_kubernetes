@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldeploy
+  namespace: web
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: db
+        image: mysql:5.6
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: mysqlsecret
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mysqlvolume
+      volumes:
+        - name: mysqlvolume
+          persistentVolumeClaim:
+              claimName: wmapp-claim

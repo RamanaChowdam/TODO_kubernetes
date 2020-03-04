@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysqldeploy
-  namespace: webapp
+  namespace: wmweb
   labels:
     app: mysql
 spec:
@@ -31,6 +31,5 @@ spec:
             name: mysqlvolume
       volumes:
         - name: mysqlvolume
-          hostPath:
-              path: /home/mysql/data
-              type: DirectoryOrCreate
+          persistentVolumeClaim:
+              claimName: wmapp-claim

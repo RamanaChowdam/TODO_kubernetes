@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webappdeploy
+  namespace: web
+  labels:
+    app: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: webapp
+        image: chowdamramana/chowdamramana:tomcatkube
+        env:
+          - name: wm.mysqlCloudHost
+            valueFrom:
+                configMapKeyRef:
+                  key: wm.mysqlCloudHost
+                  name: webapp-config
+          - name: wm.mysqlCloudUsername
+            valueFrom:
+                configMapKeyRef:
+                  key: wm.mysqlCloudUsername
+                  name: webapp-config
+          - name: wm.mysqlCloudPassword
+            valueFrom:
+                secretKeyRef:
+                  key: MYSQL_ROOT_PASSWORD
+                  name: mysqlsecret
+        ports:
+        - containerPort: 8080
+        - containerPort: 22
+        volumeMounts:
+          - mountPath: /usr/local/tomcat/logs
+            name: logsvolume
+      volumes: 
+      - name: logsvolume
+        persistentVolumeClaim:
+            claimName: wmapp-claim
+            
+

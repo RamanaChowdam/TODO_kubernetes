@@ -8,7 +8,10 @@ services:
          - /etc/group:/etc/group:ro
          - /etc/passwd:/etc/passwd:ro
          - $HOME/.m2:$HOME/.m2
+         - $HOME/.npm:$HOME/.npm
+         - $HOME/.config:$HOME/.config
       environment:
          - MAVEN_CONFIG=$HOME/.m2
-         - profile=deployment
+         - profile=${maven_build_profile}
+         
 
