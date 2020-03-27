@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: wmapp-claim
-  namespace: web
+  name: wmapp-pvc
+  namespace: webapp
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
+
+  
   

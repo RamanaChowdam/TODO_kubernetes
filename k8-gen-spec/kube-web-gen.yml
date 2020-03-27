@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webappdeploy
-  namespace: web
+  namespace: webapp
   labels:
     app: webapp
 spec:
@@ -15,6 +15,7 @@ spec:
       labels:
         app: webapp
     spec:
+      nodeName: pool-qgbj86cc6-0frl
       imagePullSecrets:
       - name: regcred
       containers:
@@ -45,6 +46,6 @@ spec:
       volumes: 
       - name: logsvolume
         persistentVolumeClaim:
-            claimName: wmapp-claim
+            claimName: wmapp-pvc
             
 

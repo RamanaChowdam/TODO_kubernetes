@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysqldeploy
-  namespace: web
+  namespace: webapp
   labels:
     app: mysql
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: mysql
@@ -15,6 +15,7 @@ spec:
       labels:
         app: mysql
     spec:
+      nodeName: pool-qgbj86cc6-0frl
       containers:
       - name: db
         image: mysql:5.6
@@ -32,4 +33,4 @@ spec:
       volumes:
         - name: mysqlvolume
           persistentVolumeClaim:
-              claimName: wmapp-claim
+              claimName: wmapp-pvc

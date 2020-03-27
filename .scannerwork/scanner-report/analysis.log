@@ -1,0 +1,36 @@
+SonarQube plugins:
+  - SonarPython 2.5.0.5733 (python)
+  - SonarCSS 1.2.0.1325 (cssfamily)
+  - JaCoCo 1.0.2.475 (jacoco)
+  - SonarGo 1.6.0.719 (go)
+  - SonarKotlin 1.5.0.315 (kotlin)
+  - Svn 1.9.0.1295 (scmsvn)
+  - SonarJS 6.2.0.12043 (javascript)
+  - SonarRuby 1.5.0.315 (ruby)
+  - SonarScala 1.5.0.315 (sonarscala)
+  - SonarC# 8.4.0.15306 (csharp)
+  - SonarJava 6.1.0.20866 (java)
+  - SonarHTML 3.2.0.2082 (web)
+  - Git 1.9.1.1834 (scmgit)
+  - SonarFlex 2.5.1.1831 (flex)
+  - SonarXML 2.0.1.2020 (xml)
+  - SonarPHP 3.3.0.5166 (php)
+  - SonarTS 2.1.0.4359 (typescript)
+  - SonarVB 8.4.0.15306 (vbnet)
+Global server settings:
+  - sonar.core.id=BF41A1F2-AXDtZcJqokEl7rulOefN
+  - sonar.core.startTime=2020-03-18T13:12:42+0000
+  - sonar.forceAuthentication=true
+Project server settings:
+Project scanner properties:
+  - sonar.host.url=http://3.135.61.83:9000
+  - sonar.language=js
+  - sonar.login=******
+  - sonar.projectBaseDir=/home/lakshmip/Downloads/TODO_1.0
+  - sonar.projectKey=HRS
+  - sonar.scanner.app=ScannerCli
+  - sonar.scanner.appVersion=4.2.0.1873
+  - sonar.sourceEncoding=UTF-8
+  - sonar.sources=services
+  - sonar.verbose=true
+  - sonar.working.directory=/home/lakshmip/Downloads/TODO_1.0/.scannerwork

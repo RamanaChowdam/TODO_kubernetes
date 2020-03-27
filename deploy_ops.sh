@@ -11,7 +11,7 @@ display_help() {
     echo "example usage for deploy: "
     echo "         $0 -e docker -o build "
     echo "         $0 -e docker -o deploy -p {mysql-password} -v {direcotry}"
-    echo "         $0 -e docker -o deploy -p Wave1234 -v /usr/local/content/myapp"
+    echo "         $0 -e docker -o deploy -p Wave1234 -v ~/usr/local/content/myapp"
     echo "         $0 -e docker -o build-deploy -P {deploymentProfile} -p {mysql-password} -v {direcotry}"
     echo "         $0 -e docker -o importdb -p {mysql-password} -d {databasename} -f {db_dump_file_name.sql} "
     echo "         $0 -e kubernetes -o deploy -n {namespace} -p {mysql-password} -w {no of webapp replicas} -m {no of mysql replicas}"
@@ -231,7 +231,7 @@ then
             ;;
         kubernetes)
             case "$command_arg" in
-                deploy)
+                deploy) # create and deploy the pods and services
             
                     if [ ! -d k8-gen-spec ];then
                         mkdir -p k8-gen-spec

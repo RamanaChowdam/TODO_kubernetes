@@ -18,6 +18,8 @@ services:
       volumes:
             - ${webapp_persistant_volume:-/tmp/tomcat-logs}:/usr/local/tomcat/logs
             - ./dist:/usr/local/tomcat/webapps
+      ports:
+              - "8080:8080"
       networks: 
           - wm_app
       

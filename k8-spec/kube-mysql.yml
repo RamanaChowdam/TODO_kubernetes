@@ -15,6 +15,7 @@ spec:
       labels:
         app: mysql
     spec:
+      nodeName: pool-qgbj86cc6-0frl
       containers:
       - name: db
         image: mysql:5.6
@@ -32,4 +33,4 @@ spec:
       volumes:
         - name: mysqlvolume
           persistentVolumeClaim:
-              claimName: wmapp-claim
+              claimName: wmapp-pvc
